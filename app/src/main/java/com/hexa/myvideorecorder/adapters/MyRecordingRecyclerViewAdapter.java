@@ -1,4 +1,4 @@
-package com.hexa.myvideorecorder.ui.main;
+package com.hexa.myvideorecorder.adapters;
 
 import androidx.recyclerview.widget.RecyclerView;
 

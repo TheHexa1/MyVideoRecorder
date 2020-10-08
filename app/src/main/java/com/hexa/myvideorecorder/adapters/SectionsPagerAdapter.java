@@ -1,4 +1,4 @@
-package com.hexa.myvideorecorder.ui.main;
+package com.hexa.myvideorecorder.adapters;
 
 import android.content.Context;
 
@@ -9,6 +9,8 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 import com.hexa.myvideorecorder.R;
+import com.hexa.myvideorecorder.fragments.RecordVideoFragment;
+import com.hexa.myvideorecorder.fragments.RecordingsFragment;
 
 /**
  * A [FragmentPagerAdapter] that returns a fragment corresponding to

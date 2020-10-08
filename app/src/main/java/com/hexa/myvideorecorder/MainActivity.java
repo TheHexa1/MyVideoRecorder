@@ -2,18 +2,12 @@ package com.hexa.myvideorecorder;
 
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.view.View;
-
-import com.hexa.myvideorecorder.ui.main.SectionsPagerAdapter;
+import com.hexa.myvideorecorder.adapters.SectionsPagerAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,4 +30,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
     }
+
+
 }

@@ -1,4 +1,4 @@
-package com.hexa.myvideorecorder.ui.main;
+package com.hexa.myvideorecorder.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.hexa.myvideorecorder.R;
+import com.hexa.myvideorecorder.adapters.MyRecordingRecyclerViewAdapter;
 import com.hexa.myvideorecorder.ui.main.dummy.DummyContent;
 
 /**
