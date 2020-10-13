@@ -2,26 +2,37 @@ package com.hexa.myvideorecorder.adapters;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.hexa.myvideorecorder.Helper;
 import com.hexa.myvideorecorder.R;
-import com.hexa.myvideorecorder.ui.main.dummy.DummyContent.DummyItem;
+import com.hexa.myvideorecorder.model.Video;
 
+import java.io.File;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem}.
+ * {@link RecyclerView.Adapter} that can display a {@link Video}.
  * TODO: Replace the implementation with code for your data type.
  */
 public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecordingRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Video> mValues;
+//    private Context context;
 
-    public MyRecordingRecyclerViewAdapter(List<DummyItem> items) {
+    public MyRecordingRecyclerViewAdapter(List<Video> items) {
         mValues = items;
+//        this.context = context;
+        Log.d("Adapter", "videos: "+mValues.size());
     }
 
     @Override
@@ -34,8 +45,11 @@ public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecor
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.vName.setText(mValues.get(position).getName());
+        holder.vDuration.setText(Helper.getFormattedDuration(mValues.get(position).getDuration()));
+        holder.vTimeStamp.setText(mValues.get(position).getTimeStamp().toString());
+
+//        Glide.with(context).asBitmap().load(Uri.fromFile(new File(holder.mItem.getPath()))).into(holder.vThumb);
     }
 
     @Override
@@ -45,20 +59,27 @@ public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecor
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final TextView mIdView;
-        public final TextView mContentView;
-        public DummyItem mItem;
+        public final TextView vName;
+        public final TextView vDuration;
+        public final TextView vTimeStamp;
+//        public final ImageView vThumb;
+        public Video mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            mIdView = (TextView) view.findViewById(R.id.item_number);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            vName = (TextView) view.findViewById(R.id.vName);
+            vDuration = (TextView) view.findViewById(R.id.vDuration);
+            vTimeStamp = view.findViewById(R.id.vTimeStamp);
+//            vThumb = view.findViewById(R.id.vThumb);
         }
 
-        @Override
+       /* @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
-        }
+            return super.toString() + " '" + vDuration.getText() + "'";
+        }*/
+
     }
+
+
 }

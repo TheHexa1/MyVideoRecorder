@@ -6,8 +6,8 @@
     android:name="com.hexa.myvideorecorder.ui.main.RecordingsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:background="#D3D3D3"
+    android:padding="4dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.RecordingsFragment"
     tools:listitem="@layout/fragment_recordings" />

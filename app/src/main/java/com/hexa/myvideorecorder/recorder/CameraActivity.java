@@ -1,8 +1,11 @@
 package com.hexa.myvideorecorder.recorder;
 
+import android.content.Intent;
 import android.hardware.Camera;
 import android.media.CamcorderProfile;
+import android.media.MediaMetadataRetriever;
 import android.media.MediaRecorder;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -19,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.hexa.myvideorecorder.R;
+import com.hexa.myvideorecorder.model.Video;
 
 import java.io.File;
 import java.io.IOException;
@@ -43,8 +47,10 @@ public class CameraActivity extends AppCompatActivity{
 //    public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
-    private int duration = 6000; //milliseconds
-    private int delay = 1000; //milliseconds
+    private long duration = 5000; // default recording duration in milliseconds
+    private static String video_title;
+    private File mediaFile;
+//    private int delay = 1000; //default delay in milliseconds
 
     private Handler timerHandler, mHandler;
     private Runnable timerRunnable, mRunnable;
@@ -55,6 +61,11 @@ public class CameraActivity extends AppCompatActivity{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera);
+
+        if(getIntent().getExtras() != null) {
+            duration = Math.round(getIntent().getFloatExtra("duration", 5)) * 1000;
+            video_title = getIntent().getStringExtra("title");
+        }
 
         // Create an instance of Camera
         mCamera = getCameraInstance();
@@ -163,7 +174,7 @@ public class CameraActivity extends AppCompatActivity{
         // inform the user that recording has stopped
 //        setCaptureButtonText("Capture");
 //        isRecording = false;
-        Log.d(TAG, "file uri: "+getOutputMediaFileUri(2));
+//        Log.d(TAG, "file uri: "+getOutputMediaFileUri());
         finish();
     }
 
@@ -211,12 +222,12 @@ public class CameraActivity extends AppCompatActivity{
     }
 
     /** Create a file Uri for saving an image or video */
-    private static Uri getOutputMediaFileUri(int type){
-        return Uri.fromFile(getOutputMediaFile(type));
+    private Uri getOutputMediaFileUri(){
+        return Uri.fromFile(getOutputMediaFile());
     }
 
     /** Create a File for saving an image or video */
-    private static File getOutputMediaFile(int type){
+    private File getOutputMediaFile(){
         // To be safe, you should check that the SDCard is mounted
         // using Environment.getExternalStorageState() before doing this.
 
@@ -233,10 +244,21 @@ public class CameraActivity extends AppCompatActivity{
             }
         }
 
+        /*sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://"
+                + Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES) + "/MyCameraApp")));*/
+
         // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        File mediaFile;
-        if (type == MEDIA_TYPE_IMAGE){
+
+        if(video_title.isEmpty())
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                "VID_"+ timeStamp + ".mp4"); //.mp4
+        else
+            mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+                    video_title + ".mp4"); //.mp4
+
+        /*if (type == MEDIA_TYPE_IMAGE){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +
                     "IMG_"+ timeStamp + ".jpg");
         } else if(type == MEDIA_TYPE_VIDEO) {
@@ -244,7 +266,17 @@ public class CameraActivity extends AppCompatActivity{
                     "VID_"+ timeStamp + ".mp4"); //.mp4
         } else {
             return null;
-        }
+        }*/
+
+        // Scan newly added file for indexing
+        MediaScannerConnection.scanFile(this,
+                new String[] { mediaFile.toString() }, null,
+                new MediaScannerConnection.OnScanCompletedListener() {
+                    public void onScanCompleted(String path, Uri uri) {
+                        Log.i(TAG, "Scanned " + path + ":");
+                        Log.i(TAG, "-> uri=" + uri);
+                    }
+        });
 
         return mediaFile;
     }
@@ -266,7 +298,7 @@ public class CameraActivity extends AppCompatActivity{
         mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
         // Step 4: Set output file
-        mediaRecorder.setOutputFile(getOutputMediaFile(MEDIA_TYPE_VIDEO).toString());
+        mediaRecorder.setOutputFile(getOutputMediaFile().toString());
 //        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
 //        mediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.MPEG_4_SP);
 
