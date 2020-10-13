@@ -12,13 +12,15 @@
         android:layout_weight="1"
         >
 
-        <TextView
+        <!--<TextView
             android:id="@+id/recordingTxt"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|top"
             android:layout_marginTop="20dp"
-            android:text="Recording..." />
+            android:text="Recording..."
+            android:textColor="#fff"
+            android:textSize="24sp" />-->
 
         <TextView
             android:id="@+id/timerTxt"

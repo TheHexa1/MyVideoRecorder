@@ -50,6 +50,7 @@ public class CameraActivity extends AppCompatActivity{
     private long duration = 5000; // default recording duration in milliseconds
     private static String video_title;
     private File mediaFile;
+    private CountDownTimer countDownTimer;
 //    private int delay = 1000; //default delay in milliseconds
 
     private Handler timerHandler, mHandler;
@@ -75,8 +76,8 @@ public class CameraActivity extends AppCompatActivity{
         FrameLayout preview = (FrameLayout) findViewById(R.id.camera_preview);
         preview.addView(mPreview);
 
-        recordingTxt = findViewById(R.id.recordingTxt);
-        recordingTxt.bringToFront();
+//        recordingTxt = findViewById(R.id.recordingTxt);
+//        recordingTxt.bringToFront();
         timerTxt = findViewById(R.id.timerTxt);
         timerTxt.bringToFront();
         timerTxt.setText(String.format("%02d:%02d",
@@ -111,7 +112,7 @@ public class CameraActivity extends AppCompatActivity{
 //            }
             isRecording = true;
             // to update the time textview at every second
-            new CountDownTimer(duration, 1000) {
+            countDownTimer = new CountDownTimer(duration, 1000) {
                 public void onTick(long millisUntilFinished) {
 
                     String formattedTime = String.format("%02d:%02d",
@@ -123,9 +124,11 @@ public class CameraActivity extends AppCompatActivity{
 
                 public void onFinish() {
 //                    mediaRecorder.stop();
-                    stopRecording();
+                    if(isRecording)
+                        stopRecording();
                 }
-            }.start();
+            };
+            countDownTimer.start();
             /*timerHandler = new Handler();
             timerRunnable = new Runnable(){
                 public void run(){
@@ -173,7 +176,7 @@ public class CameraActivity extends AppCompatActivity{
 
         // inform the user that recording has stopped
 //        setCaptureButtonText("Capture");
-//        isRecording = false;
+        isRecording = false;
 //        Log.d(TAG, "file uri: "+getOutputMediaFileUri());
         finish();
     }
@@ -201,9 +204,21 @@ public class CameraActivity extends AppCompatActivity{
             timerHandler.removeCallbacks(timerRunnable);
         if(mHandler != null)
             mHandler.removeCallbacks(mRunnable);
+
+        if(countDownTimer != null)
+            countDownTimer.cancel(); // remove count down timer
+
+        if(mediaRecorder != null && isRecording)
+            mediaRecorder.stop(); // stop recording when camera is closed abruptly
+
+
         releaseMediaRecorder();       // if you are using MediaRecorder, release it first
         releaseCamera();              // release the camera immediately on pause event
     }
+
+    /*private void deleteUnfinishedRecordings(){
+
+    }*/
 
     private void releaseMediaRecorder(){
         if (mediaRecorder != null) {
@@ -287,6 +302,8 @@ public class CameraActivity extends AppCompatActivity{
 
         // Step 1: Unlock and set camera to MediaRecorder
         mCamera.unlock();
+
+        mediaRecorder.setOrientationHint(90);
         mediaRecorder.setCamera(mCamera);
 
         // Step 2: Set sources

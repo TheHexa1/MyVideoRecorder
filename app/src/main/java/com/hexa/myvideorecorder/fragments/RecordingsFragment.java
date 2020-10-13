@@ -117,12 +117,17 @@ public class RecordingsFragment extends Fragment {
                 if (videoCursor.moveToFirst()) {
                     column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
                     vName = videoCursor.getString(column_index);
-                    column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-                    vDuration = Integer.parseInt(videoCursor.getString(column_index));
+//                    column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+//                    vDuration = Integer.parseInt(videoCursor.getString(column_index));
                     column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_TAKEN);
                     vtimeStamp = new Date(Long.parseLong(videoCursor.getString(column_index)));
-                    //                column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-                    //                vPath = videoCursor.getString(column_index);
+                    column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                    vPath = videoCursor.getString(column_index);
+
+                    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                    mmr.setDataSource(vPath);
+                    vDuration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                    Log.d("Recording Fragment", "video duration: "+vDuration);
 
                     mVideos.add(0, new Video(vName, vDuration, vtimeStamp));
                     videosCount = videoCursor.getCount();
@@ -289,14 +294,19 @@ public class RecordingsFragment extends Fragment {
             while (videoCursor.moveToNext()) {
                 column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DISPLAY_NAME);
                 vName = videoCursor.getString(column_index);
-                column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
-                vDuration = Integer.parseInt(videoCursor.getString(column_index));
+//                column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DURATION);
+//                vDuration = Integer.parseInt(videoCursor.getString(column_index));
                 column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATE_TAKEN);
                 vtimeStamp = new Date(Long.parseLong(videoCursor.getString(column_index)));
-//                column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-//                vPath = videoCursor.getString(column_index);
+                column_index = videoCursor.getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+                vPath = videoCursor.getString(column_index);
 
-                mVideos.add(0, new Video(vName, vDuration, vtimeStamp));
+                MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+                mmr.setDataSource(vPath);
+                vDuration = Integer.parseInt(mmr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION));
+                Log.d("Recording Fragment", "video duration: "+vDuration);
+
+                mVideos.add(new Video(vName, vDuration, vtimeStamp));
             }
         }catch (Exception e){
             Log.e("RecordingsFragment", "Error: "+e.getMessage());

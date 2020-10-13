@@ -2,36 +2,27 @@ package com.hexa.myvideorecorder.adapters;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
-import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.hexa.myvideorecorder.Helper;
 import com.hexa.myvideorecorder.R;
 import com.hexa.myvideorecorder.model.Video;
 
-import java.io.File;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link Video}.
- * TODO: Replace the implementation with code for your data type.
  */
 public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecordingRecyclerViewAdapter.ViewHolder> {
 
     private final List<Video> mValues;
-//    private Context context;
 
     public MyRecordingRecyclerViewAdapter(List<Video> items) {
         mValues = items;
-//        this.context = context;
         Log.d("Adapter", "videos: "+mValues.size());
     }
 

@@ -19,7 +19,6 @@ import com.google.android.material.slider.Slider;
 import com.hexa.myvideorecorder.Helper;
 import com.hexa.myvideorecorder.R;
 import com.hexa.myvideorecorder.recorder.CameraActivity;
-import com.hexa.myvideorecorder.ui.main.PageViewModel;
 
 import java.text.DateFormat;
 import java.util.concurrent.TimeUnit;
@@ -32,8 +31,6 @@ public class RecordVideoFragment extends Fragment {
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     static final int REQUEST_VIDEO_CAPTURE = 1;
-
-    private PageViewModel pageViewModel;
 
     private Button btnRecord;
     private EditText recordingTimerET;
@@ -51,12 +48,12 @@ public class RecordVideoFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
+//        pageViewModel = ViewModelProviders.of(this).get(PageViewModel.class);
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
-        pageViewModel.setIndex(index);
+//        pageViewModel.setIndex(index);
     }
 
     @Override
