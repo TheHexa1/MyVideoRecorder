@@ -39,8 +39,6 @@ public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecor
         holder.vName.setText(mValues.get(position).getName());
         holder.vDuration.setText(Helper.getFormattedDuration(mValues.get(position).getDuration()));
         holder.vTimeStamp.setText(mValues.get(position).getTimeStamp().toString());
-
-//        Glide.with(context).asBitmap().load(Uri.fromFile(new File(holder.mItem.getPath()))).into(holder.vThumb);
     }
 
     @Override
@@ -48,29 +46,19 @@ public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecor
         return mValues.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView vName;
         public final TextView vDuration;
         public final TextView vTimeStamp;
-//        public final ImageView vThumb;
         public Video mItem;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;
-            vName = (TextView) view.findViewById(R.id.vName);
-            vDuration = (TextView) view.findViewById(R.id.vDuration);
+            vName = view.findViewById(R.id.vName);
+            vDuration =  view.findViewById(R.id.vDuration);
             vTimeStamp = view.findViewById(R.id.vTimeStamp);
-//            vThumb = view.findViewById(R.id.vThumb);
         }
-
-       /* @Override
-        public String toString() {
-            return super.toString() + " '" + vDuration.getText() + "'";
-        }*/
-
     }
-
-
 }
