@@ -2,11 +2,12 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+    android:layout_height="fill_parent"
+    android:keepScreenOn="true">
 
     <FrameLayout
         android:id="@+id/camera_preview"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_weight="1">
 
@@ -15,10 +16,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center"
-            android:layout_marginBottom="50dp"
+            android:layout_marginBottom="@dimen/camera_margin_bottom"
             android:text="00:00"
             android:textColor="#fff"
-            android:textSize="24sp" />
+            android:textSize="@dimen/camera_text_size" />
 
     </FrameLayout>
 

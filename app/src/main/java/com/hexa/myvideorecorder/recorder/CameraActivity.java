@@ -12,9 +12,11 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.hexa.myvideorecorder.Helper;
 import com.hexa.myvideorecorder.R;
 
 import java.io.File;
@@ -38,7 +40,6 @@ public class CameraActivity extends AppCompatActivity{
     private File mediaFile;
 
     private CountDownTimer countDownTimer;
-
     private TextView timerTxt;
 
     @Override
@@ -50,6 +51,11 @@ public class CameraActivity extends AppCompatActivity{
             duration = Math.round(getIntent().getFloatExtra("duration", 5)) * 1000;
             video_title = getIntent().getStringExtra("title");
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
 
         // Create an instance of Camera
         mCamera = getCameraInstance();
@@ -64,11 +70,7 @@ public class CameraActivity extends AppCompatActivity{
         timerTxt.setText(String.format("%02d:%02d",
                 TimeUnit.MILLISECONDS.toMinutes(duration) % TimeUnit.HOURS.toMinutes(1),
                 TimeUnit.MILLISECONDS.toSeconds(duration) % TimeUnit.MINUTES.toSeconds(1)));
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -135,9 +137,6 @@ public class CameraActivity extends AppCompatActivity{
         if(countDownTimer != null)
             countDownTimer.cancel(); // remove count down timer
 
-        if(mediaRecorder != null && isRecording)
-            mediaRecorder.stop(); // stop recording when camera is closed abruptly (i.e. onBackPressed)
-
         releaseMediaRecorder();       // if you are using MediaRecorder, release it first
         releaseCamera();              // release the camera immediately on pause event
     }
@@ -203,9 +202,13 @@ public class CameraActivity extends AppCompatActivity{
                 });
     }
 
+    // configure media recorder
     public boolean prepareMediaRecorder(){
 
         Log.d(TAG, "prepareMediaRecorder");
+
+        if(mCamera == null)
+            mCamera = getCameraInstance();
 
         mediaRecorder = new MediaRecorder();
 
@@ -222,8 +225,14 @@ public class CameraActivity extends AppCompatActivity{
         // Set a CamcorderProfile (requires API Level 8 or higher)
         mediaRecorder.setProfile(CamcorderProfile.get(CamcorderProfile.QUALITY_HIGH));
 
-        // Set output file
-        mediaRecorder.setOutputFile(getOutputMediaFile().toString());
+        // Set output file: also check if SDCard is mounted or not
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            mediaRecorder.setOutputFile(getOutputMediaFile().toString());
+        }else{
+            Helper.displayAlert("Storage not available!", "App is not able to detect storage space. " +
+                    "Storage space is required to save video recordings.", getApplicationContext());
+            finish();
+        }
 
         // Set the preview output
         mediaRecorder.setPreviewDisplay(mPreview.getHolder().getSurface());
@@ -242,5 +251,23 @@ public class CameraActivity extends AppCompatActivity{
             return false;
         }
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(countDownTimer != null)
+            countDownTimer.cancel(); // remove count down timer
+
+        Toast.makeText(this, "Saving...", Toast.LENGTH_SHORT).show();
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if(mediaRecorder != null && isRecording)
+                    mediaRecorder.stop(); // stop recording when camera is closed abruptly (i.e. onBackPressed)
+                finish();
+            }
+        }, 1000);
+
     }
 }

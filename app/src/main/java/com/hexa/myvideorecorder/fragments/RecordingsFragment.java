@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.hexa.myvideorecorder.Helper;
 import com.hexa.myvideorecorder.R;
 import com.hexa.myvideorecorder.adapters.MyRecordingRecyclerViewAdapter;
 import com.hexa.myvideorecorder.model.Video;
@@ -63,24 +64,30 @@ public class RecordingsFragment extends Fragment {
         super.onResume();
 
         flag = "onResume";
-        videoCursor = getVideoCursor();
 
-        if(videosCount < videoCursor.getCount()) {
-            Log.d(TAG, "OnResume:Number of videos: " + videoCursor.getCount());
+        // check videosCount to add newly created videos to list
+        if (Helper.hasPermissions(getContext(), Helper.PERMISSIONS)) {
+            videoCursor = getVideoCursor();
 
-            try {
-                if (videoCursor.moveToFirst()) {
-                    addVideos(videoCursor, flag);
+            if (videosCount < videoCursor.getCount()) {
+                Log.d(TAG, "OnResume:Number of videos: " + videoCursor.getCount());
+                Log.d(TAG, "OnResume:videoCount: " + videosCount);
+
+                try {
+                    for(int i = videoCursor.getCount() - videosCount - 1; i >= 0; i--) {
+                        if (videoCursor.moveToPosition(i)) {
+                            addVideos(videoCursor, flag);
+                            if (recyclerView.getAdapter() != null) {
+                                recyclerView.getAdapter().notifyItemInserted(0);
+                            }
+                        }
+                    }
                     videosCount = videoCursor.getCount();
+                } catch (Exception e) {
+                    Log.e("RecordingsFragment", "Error: " + e.getMessage());
+                } finally {
+                    videoCursor.close();
                 }
-            } catch (Exception e) {
-                Log.e("RecordingsFragment", "Error: " + e.getMessage());
-            } finally {
-                videoCursor.close();
-            }
-
-            if (recyclerView.getAdapter() != null) {
-                recyclerView.getAdapter().notifyItemInserted(0);
                 recyclerView.smoothScrollToPosition(0);
             }
         }
@@ -92,19 +99,25 @@ public class RecordingsFragment extends Fragment {
         final View view = inflater.inflate(R.layout.fragment_recording_list, container, false);
 
         flag = "onCreate";
-        videoCursor = getVideoCursor();
-        videosCount = videoCursor.getCount();
 
-        // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
+            recyclerView.setAdapter(new MyRecordingRecyclerViewAdapter(mVideos));
+        }
+
+        // check for permissions
+        if (Helper.hasPermissions(getContext(), Helper.PERMISSIONS)) {
+            videoCursor = getVideoCursor();
+            videosCount = videoCursor.getCount();
             recyclerView.setAdapter(new MyRecordingRecyclerViewAdapter(getVideos(videoCursor)));
         }
+
         return view;
     }
 
+    // get cursor object for stored media files
     public Cursor getVideoCursor() {
         final String[] params = { MediaStore.Video.Media._ID,
                 MediaStore.Video.Media.DATA,
@@ -118,6 +131,7 @@ public class RecordingsFragment extends Fragment {
                 params, selection, selectionArgs, MediaStore.Video.Media.DATE_TAKEN + " DESC");
     }
 
+    // get list of videos
     public List<Video> getVideos(Cursor videoCursor){
         Log.d(TAG, "OnCreate:Number of videos: "+videoCursor.getCount());
 
@@ -134,6 +148,7 @@ public class RecordingsFragment extends Fragment {
         return mVideos;
     }
 
+    // add videos to list
     public void addVideos(Cursor videoCursor, String flag){
 
         String vName, vPath;
