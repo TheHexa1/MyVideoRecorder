@@ -1,7 +1,10 @@
 package com.hexa.myvideorecorder.adapters;
 
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.TextView;
 
 import com.hexa.myvideorecorder.Helper;
 import com.hexa.myvideorecorder.R;
+import com.hexa.myvideorecorder.VideoPlayer;
 import com.hexa.myvideorecorder.model.Video;
 
 import java.util.List;
@@ -20,9 +24,11 @@ import java.util.List;
 public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecordingRecyclerViewAdapter.ViewHolder> {
 
     private final List<Video> mValues;
+    private Context mContext;
 
-    public MyRecordingRecyclerViewAdapter(List<Video> items) {
+    public MyRecordingRecyclerViewAdapter(List<Video> items, Context mContext) {
         mValues = items;
+        this.mContext = mContext;
         Log.d("Adapter", "videos: "+mValues.size());
     }
 
@@ -39,6 +45,15 @@ public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecor
         holder.vName.setText(mValues.get(position).getName());
         holder.vDuration.setText(Helper.getFormattedDuration(mValues.get(position).getDuration()));
         holder.vTimeStamp.setText(mValues.get(position).getTimeStamp().toString());
+
+        holder.vCardVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = new Intent(mContext, VideoPlayer.class);
+                i.putExtra("videoURI", holder.mItem.getVideoURI());
+                mContext.startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -51,6 +66,7 @@ public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecor
         public final TextView vName;
         public final TextView vDuration;
         public final TextView vTimeStamp;
+        public final CardView vCardVideo;
         public Video mItem;
 
         public ViewHolder(View view) {
@@ -59,6 +75,7 @@ public class MyRecordingRecyclerViewAdapter extends RecyclerView.Adapter<MyRecor
             vName = view.findViewById(R.id.vName);
             vDuration =  view.findViewById(R.id.vDuration);
             vTimeStamp = view.findViewById(R.id.vTimeStamp);
+            vCardVideo = view.findViewById(R.id.vCardVideo);
         }
     }
 }

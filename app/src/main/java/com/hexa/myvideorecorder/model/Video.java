@@ -7,11 +7,13 @@ public class Video {
     private String name;
     private int duration; //milliseconds
     private Date timeStamp;
+    private String videoURI;
 
-    public Video(String name, int duration, Date timeStamp){
+    public Video(String name, int duration, Date timeStamp, String vPath){
         this.name = name;
         this.duration = duration;
         this.timeStamp = timeStamp;
+        this.videoURI = vPath;
     }
 
     public String getName() {
@@ -26,4 +28,7 @@ public class Video {
         return timeStamp;
     }
 
+    public String getVideoURI() {
+        return videoURI;
+    }
 }

@@ -10,4 +10,4 @@
     android:padding="4dp"
     app:layoutManager="LinearLayoutManager"
     tools:context=".fragments.RecordingsFragment"
-    tools:listitem="@layout/fragment_recordings" />
+    tools:listitem="@layout/fragment_recordings"/>

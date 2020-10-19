@@ -104,14 +104,14 @@ public class RecordingsFragment extends Fragment {
             Context context = view.getContext();
             recyclerView = (RecyclerView) view;
             recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            recyclerView.setAdapter(new MyRecordingRecyclerViewAdapter(mVideos));
+            recyclerView.setAdapter(new MyRecordingRecyclerViewAdapter(mVideos, getContext()));
         }
 
         // check for permissions
         if (Helper.hasPermissions(getContext(), Helper.PERMISSIONS)) {
             videoCursor = getVideoCursor();
             videosCount = videoCursor.getCount();
-            recyclerView.setAdapter(new MyRecordingRecyclerViewAdapter(getVideos(videoCursor)));
+            recyclerView.setAdapter(new MyRecordingRecyclerViewAdapter(getVideos(videoCursor), getContext()));
         }
 
         return view;
@@ -168,8 +168,8 @@ public class RecordingsFragment extends Fragment {
         Log.d(TAG, "video duration: "+vDuration);
 
         if(flag.equals("onResume"))
-            mVideos.add(0, new Video(vName, vDuration, vtimeStamp));
+            mVideos.add(0, new Video(vName, vDuration, vtimeStamp, vPath));
         else
-            mVideos.add(new Video(vName, vDuration, vtimeStamp));
+            mVideos.add(new Video(vName, vDuration, vtimeStamp, vPath));
     }
 }
